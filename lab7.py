@@ -219,7 +219,20 @@ def back_prop(net, input_values, desired_output, r=1, minimum_accuracy=-0.001):
     sigmoid function to compute neuron output.  Returns a tuple containing:
     (1) the modified neural net, with trained weights
     (2) the number of iterations (that is, the number of weight updates)"""
-    raise NotImplementedError
+    
+    # apply initial forward prop
+    actual_output, neuron_outputs = forward_prop(net, input_values, sigmoid)
+
+    # repeated back prop and forward prop
+    count = 0
+    a = accuracy(desired_output, actual_output)
+    while a < minimum_accuracy:
+        net = update_weights(net, input_values, desired_output, neuron_outputs, r)
+        actual_output, neuron_outputs = forward_prop(net, input_values, sigmoid)
+        a = accuracy(desired_output, actual_output)
+        count += 1
+
+    return net, count
 
 
 #### Part 5: Training a Neural Net #############################################
