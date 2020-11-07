@@ -26,15 +26,15 @@ nn_grid = [4,2,1] # 4 lines, 2 distinct regions intersected
 # Threshold functions
 def stairstep(x, threshold=0):
     "Computes stairstep(x) using the given threshold (T)"
-    raise NotImplementedError
+    return int(x >= threshold)
 
 def sigmoid(x, steepness=1, midpoint=0):
     "Computes sigmoid(x) using the given steepness (S) and midpoint (M)"
-    raise NotImplementedError
+    return 1 / (1 + e ** (-steepness * (x - midpoint)))
 
 def ReLU(x):
     "Computes the threshold of an input using a rectified linear unit."
-    raise NotImplementedError
+    return max(0,x)
 
 # Accuracy function
 def accuracy(desired_output, actual_output):
