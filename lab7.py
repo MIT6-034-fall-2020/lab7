@@ -8,17 +8,17 @@ INF = float('inf')
 
 #### Part 1: Wiring a Neural Net ###############################################
 
-nn_half = [1]
+nn_half = [1] # one line single neuron that meets above a certain threshold, y > T
 
-nn_angle = []
+nn_angle = [2,1] # a line is defined by neuron x + y > T, combine two of these with single node
 
-nn_cross = []
+nn_cross = [2,2,1] # 2 lines, 2 regions, do an AND
 
-nn_stripe = []
+nn_stripe = [3,1] # 3 lines, do a big OR statement 
 
-nn_hexagon = []
+nn_hexagon = [6,1] # 6 lines, all OR together
 
-nn_grid = []
+nn_grid = [4,2,1] # 4 lines, 2 distinct regions intersected
 
 
 #### Part 2: Coding Warmup #####################################################
