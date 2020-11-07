@@ -110,7 +110,34 @@ def gradient_ascent_step(func, inputs, step_size):
     After trying all possible variable assignments, returns a tuple containing:
     (1) the maximum function output found, and
     (2) the list of inputs that yielded the highest function output."""
-    raise NotImplementedError
+    
+    """
+    Strategy:
+    - Make all 27 combinations, then find max based on function
+    """
+    # define the three functions
+    def add_step_size (x): return x + step_size
+    def subtract_step_size (x): return x - step_size
+    def zero_step_size (x): return x
+
+    step_size_fn = [add_step_size, subtract_step_size, zero_step_size]
+
+    # iterate through all 27 combination for global max
+    x, y, z = inputs
+
+    max_output = -1 * INF
+    max_input = []
+    for f in step_size_fn:
+    	for g in step_size_fn:
+    		for h in step_size_fn:
+    			func_output = func(f(x), g(y), h(z))
+    			if func_output > max_output:
+    				max_output = func_output
+    				max_input = [f(x), g(y), h(z)]
+
+    return max_output, max_input
+
+
 
 def get_back_prop_dependencies(net, wire):
     """Given a wire in a neural network, returns a set of inputs, neurons, and
