@@ -39,7 +39,7 @@ def ReLU(x):
 # Accuracy function
 def accuracy(desired_output, actual_output):
     "Computes accuracy. If output is binary, accuracy ranges from -0.5 to 0."
-    raise NotImplementedError
+    return -0.5 * (desired_output - actual_output) ** 2
 
 
 #### Part 3: Forward Propagation ###############################################
@@ -74,8 +74,32 @@ def forward_prop(net, input_values, threshold_fn=stairstep):
     This function should not modify the input net.  Returns a tuple containing:
     (1) the final output of the neural net
     (2) a dictionary mapping neurons to their immediate outputs"""
-    raise NotImplementedError
 
+    """
+    Strategy:
+    - node_value gives the value of a node (based on input and nueron matched so far)
+    - iterate through the neurons and update a nueron_outputs (order based on topological sort)
+    - get the wires into the neurons via .get_wires(endNode=neuron)  
+    	- iterate through the wires, get the weight and take weighted sum
+    - use threshold function to calculate nueron output and assign it in neuron_output
+    - after all neuron assignment, net.get_output_neuron() to find net output
+    """
+    
+    neurons = net.topological_sort()
+    neuron_outputs = {}
+
+    for neuron in neurons:
+    	incoming_wires = net.get_wires(endNode=neuron)
+    	
+    	x = 0
+    	for wire in incoming_wires:
+    		weight = wire.get_weight()
+    		x += weight * node_value(wire.startNode, input_values, neuron_outputs)
+    	
+    	neuron_outputs[neuron] = threshold_fn(x)
+
+    net_output = neuron_outputs[net.get_output_neuron()]
+    return net_output, neuron_outputs
 
 #### Part 4: Backward Propagation ##############################################
 
