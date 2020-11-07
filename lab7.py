@@ -80,7 +80,7 @@ def forward_prop(net, input_values, threshold_fn=stairstep):
     - node_value gives the value of a node (based on input and nueron matched so far)
     - iterate through the neurons and update a nueron_outputs (order based on topological sort)
     - get the wires into the neurons via .get_wires(endNode=neuron)  
-    	- iterate through the wires, get the weight and take weighted sum
+        - iterate through the wires, get the weight and take weighted sum
     - use threshold function to calculate nueron output and assign it in neuron_output
     - after all neuron assignment, net.get_output_neuron() to find net output
     """
@@ -89,14 +89,14 @@ def forward_prop(net, input_values, threshold_fn=stairstep):
     neuron_outputs = {}
 
     for neuron in neurons:
-    	incoming_wires = net.get_wires(endNode=neuron)
-    	
-    	x = 0
-    	for wire in incoming_wires:
-    		weight = wire.get_weight()
-    		x += weight * node_value(wire.startNode, input_values, neuron_outputs)
-    	
-    	neuron_outputs[neuron] = threshold_fn(x)
+        incoming_wires = net.get_wires(endNode=neuron)
+        
+        x = 0
+        for wire in incoming_wires:
+            weight = wire.get_weight()
+            x += weight * node_value(wire.startNode, input_values, neuron_outputs)
+        
+        neuron_outputs[neuron] = threshold_fn(x)
 
     net_output = neuron_outputs[net.get_output_neuron()]
     return net_output, neuron_outputs
@@ -128,12 +128,12 @@ def gradient_ascent_step(func, inputs, step_size):
     max_output = -1 * INF
     max_input = []
     for f in step_size_fn:
-    	for g in step_size_fn:
-    		for h in step_size_fn:
-    			func_output = func(f(x), g(y), h(z))
-    			if func_output > max_output:
-    				max_output = func_output
-    				max_input = [f(x), g(y), h(z)]
+        for g in step_size_fn:
+            for h in step_size_fn:
+                func_output = func(f(x), g(y), h(z))
+                if func_output > max_output:
+                    max_output = func_output
+                    max_input = [f(x), g(y), h(z)]
 
     return max_output, max_input
 
@@ -146,25 +146,25 @@ def get_back_prop_dependencies(net, wire):
     Strategy:
     - Keep a queue of the startNode, and work backwards until no more incoming neigbors
     - Start with wire's startNode
-    	- Get all incoming wires to this node using .get_wires(endNode=curr_node)
-    		- For each wire, add the wire itself and startNode (exclude endNode since already counted for)
-    		- Add each startNode to queue for further exploration
-    	- Queue terminates with input nodes which return empty list to .get_wires
-   	- Return the set
+        - Get all incoming wires to this node using .get_wires(endNode=curr_node)
+            - For each wire, add the wire itself and startNode (exclude endNode since already counted for)
+            - Add each startNode to queue for further exploration
+        - Queue terminates with input nodes which return empty list to .get_wires
+    - Return the set
     """
     dependencies = {wire, wire.startNode, wire.endNode} 
     
     queue = [wire.startNode]
     while queue != []:
-    	curr_node = queue.pop(0)
-    	incoming_wires = net.get_wires(endNode=curr_node) 
-    	for wire in incoming_wires:
-    		dependencies.add(wire)
-    		dependencies.add(wire.startNode)
-    		queue.append(wire.startNode)
+        curr_node = queue.pop(0)
+        incoming_wires = net.get_wires(endNode=curr_node) 
+        for wire in incoming_wires:
+            dependencies.add(wire)
+            dependencies.add(wire.startNode)
+            queue.append(wire.startNode)
 
     return dependencies
-    
+
 
 def calculate_deltas(net, desired_output, neuron_outputs):
     """Given a neural net and a dictionary of neuron outputs from forward-
@@ -172,7 +172,27 @@ def calculate_deltas(net, desired_output, neuron_outputs):
     neuron in the net. Uses the sigmoid function to compute neuron output.
     Returns a dictionary mapping neuron names to update coefficient (the
     delta_B values). """
-    raise NotImplementedError
+
+    """ Use formula from specifications, starting from output node """
+    neuron_deltas = {}
+
+    neurons = net.topological_sort()
+    neurons.reverse()
+    for neuron in neurons:
+        out = neuron_outputs[neuron]
+
+        if net.is_output_neuron(neuron):
+            delta = out * (1 - out) * (desired_output - out)
+            neuron_deltas[neuron] = delta
+        else:
+            outgoing_delta_component = 0
+            outgoing_wires = net.get_wires(startNode=neuron)
+            for wire in outgoing_wires:
+                outgoing_delta_component += wire.get_weight() * neuron_deltas[wire.endNode]
+            delta = out * (1 - out) * outgoing_delta_component
+            neuron_deltas[neuron] = delta
+
+    return neuron_deltas
 
 def update_weights(net, input_values, desired_output, neuron_outputs, r=1):
     """Performs a single step of back-propagation.  Computes delta_B values and
