@@ -199,7 +199,20 @@ def update_weights(net, input_values, desired_output, neuron_outputs, r=1):
     weight updates for entire neural net, then updates all weights.  Uses the
     sigmoid function to compute neuron output.  Returns the modified neural net,
     with the updated weights."""
-    raise NotImplementedError
+
+    """ Use formula from specifications, iterate through all wires """
+
+    deltas = calculate_deltas(net, desired_output, neuron_outputs)
+    wires = net.get_wires()
+
+    for wire in wires:
+        old_weight, A, B = wire.get_weight(), wire.startNode, wire.endNode
+        delta_weight = r * node_value(A, input_values, neuron_outputs) * deltas[B] 
+        new_weight = old_weight + delta_weight
+        wire.set_weight(new_weight)
+
+    return net
+
 
 def back_prop(net, input_values, desired_output, r=1, minimum_accuracy=-0.001):
     """Updates weights until accuracy surpasses minimum_accuracy.  Uses the
