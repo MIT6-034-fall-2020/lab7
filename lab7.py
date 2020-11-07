@@ -8,7 +8,7 @@ INF = float('inf')
 
 #### Part 1: Wiring a Neural Net ###############################################
 
-nn_half = []
+nn_half = [1]
 
 nn_angle = []
 
