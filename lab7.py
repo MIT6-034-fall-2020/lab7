@@ -144,27 +144,26 @@ def get_back_prop_dependencies(net, wire):
     
     """
     Strategy:
-    - Keep a queue of the startNode, and work backwards until no more incoming neigbors
-    - Start with wire's startNode
-        - Get all incoming wires to this node using .get_wires(endNode=curr_node)
-            - For each wire, add the wire itself and startNode (exclude endNode since already counted for)
-            - Add each startNode to queue for further exploration
+    - Keep a queue of the startNode, and work forward until no more outgoing neigbors
+    - Start with wire's endNode
+        - Get all incoming wires to this node using .get_wires(startNode=curr_node)
+            - For each wire, add the wire itself and endNode (exclude startNode since already counted for)
+            - Add each endNode to queue for further exploration
         - Queue terminates with input nodes which return empty list to .get_wires
     - Return the set
     """
     dependencies = {wire, wire.startNode, wire.endNode} 
     
-    queue = [wire.startNode]
+    queue = [wire.endNode]
     while queue != []:
         curr_node = queue.pop(0)
-        incoming_wires = net.get_wires(endNode=curr_node) 
+        incoming_wires = net.get_wires(startNode=curr_node) 
         for wire in incoming_wires:
             dependencies.add(wire)
-            dependencies.add(wire.startNode)
-            queue.append(wire.startNode)
+            dependencies.add(wire.endNode)
+            queue.append(wire.endNode)
 
     return dependencies
-
 
 def calculate_deltas(net, desired_output, neuron_outputs):
     """Given a neural net and a dictionary of neuron outputs from forward-
