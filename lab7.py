@@ -237,27 +237,27 @@ def back_prop(net, input_values, desired_output, r=1, minimum_accuracy=-0.001):
 
 #### Part 5: Training a Neural Net #############################################
 
-ANSWER_1 = None
-ANSWER_2 = None
-ANSWER_3 = None
-ANSWER_4 = None
-ANSWER_5 = None
+ANSWER_1 = 11
+ANSWER_2 = 18
+ANSWER_3 = 3
+ANSWER_4 = 80
+ANSWER_5 = 50
 
-ANSWER_6 = None
-ANSWER_7 = None
-ANSWER_8 = None
-ANSWER_9 = None
+ANSWER_6 = 1
+ANSWER_7 = "checkerboard"
+ANSWER_8 = ["small", "medium", "large"]
+ANSWER_9 = "B"
 
-ANSWER_10 = None
-ANSWER_11 = None
-ANSWER_12 = None
+ANSWER_10 = "D"
+ANSWER_11 = ["A","C"]
+ANSWER_12 = ["A","E"]
 
 
 #### SURVEY ####################################################################
 
-NAME = None
-COLLABORATORS = None
-HOW_MANY_HOURS_THIS_LAB_TOOK = None
-WHAT_I_FOUND_INTERESTING = None
-WHAT_I_FOUND_BORING = None
-SUGGESTIONS = None
+NAME = "Nabib Ahmed"
+COLLABORATORS = "None"
+HOW_MANY_HOURS_THIS_LAB_TOOK = 6
+WHAT_I_FOUND_INTERESTING = "Neural Network"
+WHAT_I_FOUND_BORING = "Understanding the API"
+SUGGESTIONS = "None"
